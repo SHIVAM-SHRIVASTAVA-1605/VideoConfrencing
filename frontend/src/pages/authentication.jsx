@@ -12,6 +12,8 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { AuthContext } from '../contexts/AuthContext';
+import Snackbar from '@mui/material/Snackbar';
 
 
 
@@ -23,11 +25,35 @@ export default function Authentication() {
     const [password, setPassword] = React.useState();
     const [name, setName] = React.useState();
     const [error, setError] = React.useState();
-    const [messages, setMessages] = React.useState();
+    const [message, setMessage] = React.useState();
 
     const [formState, setFormState] = React.useState(0);
 
     const [open, setOpen] = React.useState(false)
+
+    const {handleRegister, handleLogin} = React.useContext(AuthContext);
+
+    let handleAuth = async () => {
+        try {
+            if(formState === 0) {
+                let result = await handleLogin(username, password);
+                
+            }
+            if(formState === 1) {
+                let result = await handleRegister(name, username, password);
+                console.log(result);
+                setUsername("")
+                setMessage(result);
+                setOpen(true);
+                setError("")
+                setFormState(0)
+                setPassword("")
+            }
+        } catch(err) {
+            let message = (err.response.data.message);
+            setError(message);
+        }
+    }
 
     return(
         <ThemeProvider theme={defaultTheme}>
@@ -72,7 +98,7 @@ export default function Authentication() {
 
                         
                         <Box component="from" nonValidate sx={{ mt:1 }}>
-                            <p>{name}</p>    
+                               
                             {formState === 1 ?
                                 <TextField
                                 margin='normal'
@@ -81,7 +107,7 @@ export default function Authentication() {
                                 id='username'
                                 label='Full name'
                                 name='username'
-                                autoComplete='username'
+                                value={name}
                                 autoFocus
                                 onChange={(e) => setName(e.target.value)}
                                 /> :
@@ -94,7 +120,7 @@ export default function Authentication() {
                                 id='username'
                                 label='Username'
                                 name='username'
-                                autoComplete='username'
+                                value={username}
                                 autoFocus
                                 onChange={(e) => setUsername(e.target.value)}
                             />
@@ -104,26 +130,34 @@ export default function Authentication() {
                                 fullWidth
                                 name='password'
                                 label='Password'
+                                value={password}
                                 type='password'
                                 id='password'
                                 onChange={(e) => setPassword(e.target.value)}
                             />
-                            <FormControlLabel
-                                control={<Checkbox value="remember" color='primary'/>}
-                                label='Rememeber me'
-                            />
+
+                            <p style={{color: "red"}}>
+                                {error}
+                            </p>
                             <Button
                                 type="button"
                                 fullWidth
                                 variant='contained'
                                 sx={{ mt:3, mb:2}}
+                                onClick={handleAuth}
                             >
-                                Sign in
+                                {formState === 0 ? "Login" : "Register"}
                             </Button>
                         </Box>
                     </Box>
                 </Grid>
             </Grid>
+
+            <Snackbar 
+                open={open}
+                autoHideDuration={4000}
+                message={message}
+            />
         </ThemeProvider>
     );
 }
