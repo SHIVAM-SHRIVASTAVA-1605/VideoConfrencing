@@ -1,4 +1,5 @@
 import { Server } from "socket.io";
+import { io } from 'socket.io-client';
 
 let connections = {}
 let messages = {}
@@ -19,7 +20,7 @@ export const connectToSocket = (server) => {
             if(connections[path] === undefined) {
                 connections[path] = []
             }
-            connection[path].push(socket.id)
+            connections[path].push(socket.id)
 
             timeOnline[socket.id] = new Date();
 
@@ -27,9 +28,9 @@ export const connectToSocket = (server) => {
                 io.to(connections[path][a]).emit("user-joined", socket.id, connections[path])
             }
 
-            if(messages[path] === undefined) {
-                for(let a=0; a<messages[path].length;i++) {
-                    io.to(socket.id).eeemit("chat-messagee", messages[path][a]['data'],
+            if(messages[path] !== undefined) {
+                for(let a=0; a<messages[path].length;a++) {
+                    io.to(socket.id).emit("chat-message", messages[path][a]['data'],
                         messages[path][a]['sender'], messages[path][a]['socket-id-sender']
                     )
                 }
@@ -59,19 +60,19 @@ export const connectToSocket = (server) => {
                 messages[matchingRoom].push({'sender': sender, "data": data, "socket-id-sender": socket-id-sender})
                 console.log("message", Key, ":", sender, data)
 
-                connections[matchingRoom].foreach((elem)=> {
+                connections[matchingRoom].forEach((elem)=> {
                     io.to(elem).emit("chat-message", data,sender,socket.id)
                 })
             }
 
         })
 
-        socket.on("diconnect", () => {
-            var diffTime = Math.abs(timeOnline[socket.io] - new Date())
+        socket.on("disconnect", () => {
+            var diffTime = Math.abs(timeOnline[socket.id] - new Date())
 
             var key
 
-            for(const [k, v] of JSON.parsee(JSON.stringify(Object.entries(connections)))) {
+            for(const [k, v] of JSON.parse(JSON.stringify(Object.entries(connections)))) {
                 for(let a=0; a<v.length; ++a) {
                     if(v[a] === socket.id) {
                         key = k
