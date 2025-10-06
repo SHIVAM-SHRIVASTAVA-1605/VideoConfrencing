@@ -40,7 +40,7 @@ export default function VideoMeetComponent() {
 
     let [screen, setScreen] = useState();
 
-    let [showModal, setModal] = useState();
+    let [showModal, setModal] = useState(true);
 
     let [screenAvailable, setScreenAvailable] = useState();
 
@@ -405,6 +405,10 @@ export default function VideoMeetComponent() {
     let handleScreen = () => {
         setScreen(!screen)
     }
+
+    let sendMessage = () => {
+        
+    }
     
   return (
     <div>
@@ -421,6 +425,22 @@ export default function VideoMeetComponent() {
 
             </div> : 
             <div className={styles.meetVideoContainer}>
+
+                {showModal ? 
+                    <div className={styles.chatRoom}> 
+
+                        <div className = {styles.chatContainer}>
+                            <h1>Chat</h1>
+                            
+                            <div className={styles.chattingArea}>
+                                <TextField id="outlined-basic" label="Enrer you chat" variant="outlined" />
+                                <Button variant='contained' onClick={sendMessage}>SEND</Button>
+                            </div>
+                        
+                        </div>
+                    </div> :
+                    <></>
+                }
 
                 <div className= {styles.buttonContainers}>
                     <IconButton onClick={handleVideo} style={{color: "white"}}>
@@ -443,7 +463,7 @@ export default function VideoMeetComponent() {
                     }
 
                     <Badge badgeContent={newMessages} max={999} color='secondary'>
-                        <IconButton style={{color: "white"}}>
+                        <IconButton onClick={() => setModal(!showModal)} style={{color: "white"}}>
                             <ChatIcon/>
                         </IconButton>
                     </Badge>
