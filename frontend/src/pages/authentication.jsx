@@ -65,7 +65,8 @@ export default function Authentication() {
                     sm={4}
                     md={7}
                     sx={{
-                        backgroundImage: 'url(https://source.unsplash.com/1600x900/?wallpaper)',                        backgroundRepeat: 'no-repeat',
+                        backgroundImage: 'url(https://source.unsplash.com/1600x900/?wallpaper)',
+                        backgroundRepeat: 'no-repeat',                      backgroundRepeat: 'no-repeat',
                         backgroundColor: (t) => 
                             t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
                         backgroundSize: 'cover',
@@ -76,8 +77,8 @@ export default function Authentication() {
                 <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
                     <Box
                         sx={{
-                            mv: 8,
-                            max: 4,
+                            my: 8,
+                            mx: 4,
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'center',
